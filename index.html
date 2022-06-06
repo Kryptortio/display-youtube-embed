@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<title>YouTubeViewer</title>
+		<script src="https://cdn.plyr.io/3.7.2/plyr.js"></script>
+		<link rel="stylesheet" href="https://cdn.plyr.io/3.7.2/plyr.css" />
+		<style>
+			.plyr iframe {
+				transition: 1s filter;
+				filter: opacity(1);
+			}
+			.plyr.plyr--paused iframe {
+				filter: opacity(0);
+				transition: 0.2s filter;
+			}
+			.plyr--paused .plyr__poster {
+				z-index: 2;
+				min-width: 100%;
+				min-height: 100%;
+				position: absolute;
+				opacity: 1;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+			}
+		</style>
+	</head>
+	
+	
+	<body style="margin: 0;overflow: hidden;">
+		<script>
+			const urlParams = window.location.search.substring(1);
+			if(urlParams.length > 1) {
+				
+				if(urlParams.match(/youtube|vimeo/i)) {
+					let  plyrDiv = document.createElement('div');
+					plyrDiv.id = 'player';
+					plyrDiv.classList.add('plyr__video-embed');
+					let embed = document.createElement('iframe');
+					embed.src = urlParams;
+					embed.setAttribute('allow','autoplay');
+					embed.setAttribute('allowfullscreen','');
+					embed.setAttribute('allowtransparency','');
+					embed.style.width="100%";
+					embed.style.height="100%";
+					embed.style.border="0";
+					plyrDiv.appendChild(embed);
+					document.body.appendChild(plyrDiv);
+				} else {
+					let  vidElem = document.createElement('video');
+					vidElem.id = 'player';
+					vidElem.setAttribute('playsinline','');
+					vidElem.setAttribute('controls','');
+					vidElem.style.width="100%";
+					vidElem.style.height="100%";
+					let vidSrc = document.createElement('source');
+					vidSrc.src = urlParams;
+					vidSrc.setAttribute('type','video/'+urlParams.match(/mp4|webm/)[0]);
+					vidElem.appendChild(vidSrc);
+					document.body.appendChild(vidElem);
+				}
+				const player = new Plyr('#player');
+			} else {
+				let inp = document.createElement('textarea');
+				inp.style.width = "50%";
+				inp.style.height = "50%";
+				inp.style.padding = "15px";
+				inp.style.marginLeft = "25%";
+				inp.style.marginTop = "15%";
+				inp.placeholder = "1. Go to the video you want to share (YouTube/Vimeo)\n2. Click the share button\n3. Find the embed option\n4. Copy the embed code\n5. Paste the embed code here\n6. Copy the link appearing below\n\nor\n\nJust add a mp4/webm url";
+				document.body.appendChild(inp);
+				let link = document.createElement('a');
+				link.style.display = "none";
+				link.style.marginLeft = "42%";
+				link.style.fontSize = "4em";
+				link.innerHTML = 'Share this link';
+				document.body.appendChild(link);
+				
+				
+				
+				inp.onkeyup = function() {
+					let url = this.value.match(/http[^"]+/);
+					if(url) {
+						link.href = document.location.href + '?' + url[0];
+						link.style.display = "block";
+					}
+				};
+			}
+		</script>
+	</body>
+</html>
